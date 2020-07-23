@@ -1,0 +1,102 @@
+<template>
+  <div class="home">
+    <div class="control-btns">
+      <el-button @click="getXMlText" size="small" type="primary">查看XML</el-button>
+    </div>
+    <div class="graph-toolbar" ref="graphToolBar"></div>
+    <div class="graph-container" ref="graphContainer"></div>
+    <el-dialog :close-on-click-modal="false" :visible.sync="xmlVisible" append-to-body title="XML预览" top="auto" width="600">
+      <pre>{{ mxXml }}</pre>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import mx from "../assets/mxgraph";
+import { formatXml } from "../utils/formart";
+import { init } from "../components/RightPopMenu";
+
+export default {
+  name: "Home",
+  data() {
+    return {
+      graph: null,
+      model: null,
+      codec: null,
+      editor: null,
+      defaultToolbar: null,
+      toolbar: null,
+      xmlVisible: false,
+      mxXml: ""
+    };
+  },
+  mounted() {
+    console.log(mx);
+
+    this.model = new mx.mxGraphModel();
+    this.graph = new mx.mxGraph(this.$refs.graphContainer, this.model);
+    this.editor = new mx.mxEditor();
+    this.graph.setTooltips(true);
+    this.graph.setEnabled(true);
+
+    // 得到默认的parent用于插入cell。这通常是root的第一个孩子。
+    let parent = this.graph.getDefaultParent();
+    this.graph.isCellFoldable = () => false;
+
+    this.defaultToolbar = new mx.mxDefaultToolbar(this.$refs.graphToolBar, this.editor);
+
+    // this.toolbar = new mx.mxToolbar(this.$refs.graphToolBar);
+    this.defaultToolbar.addItem("copy", `${process.env.BASE_URL}/static/images/copy.gif`, "copy");
+
+    new mx.mxCellEditor(this.graph).init();
+    // new mx.mxEditor().setToolbarContainer(this.$refs.graphToolBar);
+
+    // this.resetContextMenu();
+    init(this.graph, this.editor, this.$refs.graphContainer);
+
+    // 开始事务
+    this.model.beginUpdate();
+
+    console.log(this.graph);
+
+    try {
+      let v1 = this.graph.insertVertex(parent, null, "Hello", 20, 20, 80, 30);
+      let v2 = this.graph.insertVertex(parent, null, "World", 200, 20, 80, 30);
+      let v3 = this.graph.insertVertex(parent, null, "!", 100, 80, 80, 30);
+      // let v4 = this.graph.insert(parent, null, "!", 100, 80, 80, 30);
+      this.graph.insertEdge(parent, null, "", v1, v2);
+      this.graph.insertEdge(parent, null, "", v2, v3);
+    } finally {
+      // 提交事务
+      this.model.endUpdate();
+    }
+  },
+  methods: {
+    getXMlText() {
+      this.mxXml = formatXml(mx.mxUtils.getXml(new mx.mxCodec().encode(this.graph.getModel())));
+      this.xmlVisible = true;
+    }
+  },
+  beforeDestroy() {
+    // this.model.endUpdate();
+  }
+};
+</script>
+<style lang="scss">
+@import "../assets/styles/right-menu.scss";
+.home {
+  display: grid;
+  grid-template-columns: 360px auto;
+  grid-template-rows: 48px auto;
+  width: 100vw;
+  height: 80vh;
+}
+.control-btns {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+.graph-container {
+  background: url("../../public/static/images/grid.gif");
+  position: relative;
+}
+</style>
