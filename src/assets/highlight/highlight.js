@@ -1,5 +1,5 @@
 // import 'highlight.js/styles/atelier-dune-dark.scss'
-import "../styles/atelier-dune-dark.scss";
+// import "../styles/atelier-dune-dark.scss";
 
 import hljs from "highlight.js/lib/highlight";
 import javascript from "highlight.js/lib/languages/javascript";
@@ -20,17 +20,17 @@ import linenumber from "./linenumber";
 linenumber(hljs);
 
 // 按需导入高亮语种
-hljs.registerLanguage("javascript", javascript);
+// hljs.registerLanguage("javascript", javascript);
 hljs.registerLanguage("xml", xml);
-hljs.registerLanguage("less", less);
-hljs.registerLanguage("css", css);
-hljs.registerLanguage("java", java);
-hljs.registerLanguage("python", python);
-hljs.registerLanguage("objectivec", objectivec);
-hljs.registerLanguage("markdown", markdown);
-hljs.registerLanguage("bash", bash);
-hljs.registerLanguage("json", json);
-hljs.registerLanguage("http", http);
+// hljs.registerLanguage("less", less);
+// hljs.registerLanguage("css", css);
+// hljs.registerLanguage("java", java);
+// hljs.registerLanguage("python", python);
+// hljs.registerLanguage("objectivec", objectivec);
+// hljs.registerLanguage("markdown", markdown);
+// hljs.registerLanguage("bash", bash);
+// hljs.registerLanguage("json", json);
+// hljs.registerLanguage("http", http);
 
 hljs.initHighlightingOnLoad();
 

@@ -13,8 +13,10 @@
 
 <script>
 import mx from "../assets/mxgraph";
+// import hljs from "../assets/highlight/highlight";
 import { formatXml } from "../utils/formart";
-import { init } from "../components/RightPopMenu";
+import { initPopMenu } from "../components/RightPopMenu";
+import { initMenuBar } from "../components/LeftMenuBar";
 
 export default {
   name: "Home",
@@ -38,32 +40,24 @@ export default {
     this.editor = new mx.mxEditor();
     this.graph.setTooltips(true);
     this.graph.setEnabled(true);
+    this.graph.setHtmlLabels(true);
 
     // 得到默认的parent用于插入cell。这通常是root的第一个孩子。
     let parent = this.graph.getDefaultParent();
     this.graph.isCellFoldable = () => false;
 
-    this.defaultToolbar = new mx.mxDefaultToolbar(this.$refs.graphToolBar, this.editor);
-
-    // this.toolbar = new mx.mxToolbar(this.$refs.graphToolBar);
-    this.defaultToolbar.addItem("copy", `${process.env.BASE_URL}/static/images/copy.gif`, "copy");
-
-    new mx.mxCellEditor(this.graph).init();
-    // new mx.mxEditor().setToolbarContainer(this.$refs.graphToolBar);
-
-    // this.resetContextMenu();
-    init(this.graph, this.editor, this.$refs.graphContainer);
+    // 左侧工具栏
+    this.defaultToolbar = initMenuBar(this.$refs.graphToolBar, this.editor);
+    // 右键菜单
+    initPopMenu(this.graph, this.editor, this.$refs.graphContainer);
 
     // 开始事务
     this.model.beginUpdate();
-
-    console.log(this.graph);
 
     try {
       let v1 = this.graph.insertVertex(parent, null, "Hello", 20, 20, 80, 30);
       let v2 = this.graph.insertVertex(parent, null, "World", 200, 20, 80, 30);
       let v3 = this.graph.insertVertex(parent, null, "!", 100, 80, 80, 30);
-      // let v4 = this.graph.insert(parent, null, "!", 100, 80, 80, 30);
       this.graph.insertEdge(parent, null, "", v1, v2);
       this.graph.insertEdge(parent, null, "", v2, v3);
     } finally {
@@ -73,7 +67,9 @@ export default {
   },
   methods: {
     getXMlText() {
-      this.mxXml = formatXml(mx.mxUtils.getXml(new mx.mxCodec().encode(this.graph.getModel())));
+      let str = formatXml(mx.mxUtils.getXml(new mx.mxCodec().encode(this.graph.getModel())));
+      // this.mxXml = hljs.highlightAuto(str).value;
+      this.mxXml = str;
       this.xmlVisible = true;
     }
   },

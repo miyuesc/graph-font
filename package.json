@@ -11,12 +11,13 @@
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
     "export-loader": "^1.0.52",
+    "highlight.js": "^10.1.1",
+    "lodash": "latest",
     "mxgraph": "^4.2.0",
     "script-loader": "^0.7.2",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
-    "vuex": "^3.4.0",
-    "lodash": "latest"
+    "vuex": "^3.4.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",

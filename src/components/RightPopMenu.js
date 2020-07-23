@@ -1,6 +1,6 @@
 import mx from "../assets/mxgraph";
 
-export const init = (graph, editor, container) => {
+export const initPopMenu = (graph, editor, container) => {
   // 禁用浏览器右键
   mx.mxEvent.disableContextMenu(container);
   // 设置这个属性后节点之间才可以连接
@@ -42,6 +42,14 @@ export const init = (graph, editor, container) => {
       } catch (e) {
         console.log(e);
       }
+    });
+
+    menu.addItem("从xml显示图形", null, () => {
+      let req = mx.mxUtils.load("graph.xml");
+      let root = req.getDocumentElement();
+      let dec = new mx.mxCodec(root);
+      dec.decode(root, graph.getModel());
+      graph.getModel().endUpdate();
     });
   };
 };
