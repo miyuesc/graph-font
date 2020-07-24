@@ -38,9 +38,18 @@ export default {
     this.model = new mx.mxGraphModel();
     this.graph = new mx.mxGraph(this.$refs.graphContainer, this.model);
     this.editor = new mx.mxEditor();
-    this.graph.setTooltips(true);
-    this.graph.setEnabled(true);
+
     this.graph.setHtmlLabels(true);
+    // 开启可以拖拽建立关系
+    this.graph.setConnectable(true);
+    // 开启方块上的文字编辑功能
+    this.graph.setCellsEditable(false);
+    // 启用对齐线帮助定位
+    mx.mxGraphHandler.prototype.guidesEnabled = true;
+    // 选择基本元素开启
+    this.graph.setEnabled(true);
+    //开启提示
+    this.graph.setTooltips(true);
 
     // 得到默认的parent用于插入cell。这通常是root的第一个孩子。
     let parent = this.graph.getDefaultParent();
