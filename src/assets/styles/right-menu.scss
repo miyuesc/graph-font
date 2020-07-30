@@ -1,5 +1,6 @@
-.mxPopupMenu {
+div.mxPopupMenu {
   position: absolute;
+  border-width: 0 !important;
 }
 table {
   border-collapse: collapse;
@@ -9,7 +10,7 @@ table.mxPopupMenu {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  box-shadow: 0 2px 6px 2px rgba(60, 64, 67, 0.15);
+  box-shadow: 0 2px 6px 2px rgba(60, 64, 67, 0.25);
   background: white;
   border-radius: 4px;
   border: none;
@@ -23,6 +24,9 @@ table.mxPopupMenu hr {
 }
 table td.mxPopupMenuItem {
   padding: 8px 24px;
+}
+table td.mxPopupMenuIcon {
+  background: none;
 }
 .mxPopupMenuItemHover {
   transition: all 0.1s ease-in-out;

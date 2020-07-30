@@ -1,4 +1,5 @@
 import mx from "../assets/mxgraph";
+import { uuidGenerator } from "../utils/utils";
 
 export const initPopMenu = (graph, editor, container) => {
   // 禁用浏览器右键
@@ -9,53 +10,80 @@ export const initPopMenu = (graph, editor, container) => {
   new mx.mxRubberband(graph);
   // Configures automatic expand on mouseover
   graph.popupMenuHandler.autoExpand = true;
+  //
+  window.copyCells = null;
   // Installs context menu
   graph.popupMenuHandler.factoryMethod = (menu, cell, evt) => {
-    addPopupMenuHistoryItems(graph, editor, menu, cell, evt);
     addPopupMenuEditItems(graph, editor, menu, cell, evt);
     addPopupMenuUserDefine(graph, editor, menu, cell, evt);
   };
 };
-
+// 创建新节点
 export const createNewNode = (graph, x, y, text) => {
   const parent = graph.getDefaultParent();
   return graph.insertVertex(parent, null, text, x, y, 80, 30);
 };
-// 历史记录操作
-export const addPopupMenuHistoryItems = (graph, editor, menu, cell, evt) => {
-  if (!graph.isSelectionEmpty()) return;
-  // addMenuItem(menu, "undo", null, evt, null, editor);
-};
 // 选中元素操作
 export const addPopupMenuEditItems = (graph, editor, menu, cell, evt) => {
+  console.log(window.copyCells);
+  let copyCells = window.copyCells;
   if (graph.isSelectionEmpty()) {
-    menu.addItem("粘贴", null, () => {
-      console.log(evt);
-    });
+    if (copyCells && copyCells.length) {
+      menu.addItem("粘贴", null, () => {
+        let newCells = [];
+        // 修改 cells 中的元素属性
+        copyCells.forEach(function(cell, i) {
+          cell.id = uuidGenerator;
+          cell.value = cell.value || "";
+          newCells.push(cell);
+        });
+        mxClipboard.setCells(newCells);
+        mxClipboard.paste(graph);
+      });
+    }
   } else {
     menu.addItem("删除", null, () => {
       cell.removeFromParent(); //删除了此cell
       graph.refresh(cell);
     });
     menu.addSeparator();
-    menu.addItem("copy", null, () => {
-      console.log(evt);
+    menu.addItem("复制", null, () => {
+      let cells = graph.getSelectionCells();
+      window.copyCells = [];
+      if (cells && cells.length) {
+        cells.forEach(function(cell, i) {
+          cell.id = "";
+          cell.value = (cell.value || "") + "_1";
+          window.copyCells.push(cell);
+        });
+      }
     });
     menu.addItem("剪切", null, () => {
-      console.log(evt);
+      let cells = graph.getSelectionCells();
+      window.copyCells = [];
+      if (cells && cells.length) {
+        cells.forEach(function(cell, i) {
+          cell.id = "";
+          cell.value = (cell.value || "") + "_1";
+          window.copyCells.push(cell);
+        });
+      }
+      graph.removeCells(cells);
     });
     menu.addSeparator();
     menu.addItem("复制并粘贴", null, () => {
       let cells = graph.getSelectionCells();
       if (cells && cells.length) {
         cells = graph.cloneCells(cells);
-        let newCells = cells.map(o => {
-          return { id: o.id, value: o.value + "_1" };
+        let newCells = [];
+        // 修改 cells 中的元素属性
+        cells.forEach(function(cell, i) {
+          cell.id = uuidGenerator;
+          cell.value = (cell.value || "") + "_1";
+          newCells.push(cell);
         });
-        console.log(cells);
-        console.log(mx.mxClipboard);
-        mx.mxClipboard.setCells(newCells);
-        mx.mxClipboard.paste(graph);
+        mxClipboard.setCells(newCells);
+        mxClipboard.paste(graph);
       }
     });
   }

@@ -1,5 +1,8 @@
 import mx from "mxgraph";
-const mxgraph = mx({});
+const mxgraph = require("mxgraph")({
+  mxImageBasePath: "./mxgraph/src/images",
+  mxBasePath: "./mxgraph/src"
+});
 // decode bug https://github.com/jgraph/mxgraph/issues/49
 window.mxGraph = mxgraph.mxGraph;
 window.mxGraphModel = mxgraph.mxGraphModel;
