@@ -1,4 +1,3 @@
-import mx from "mxgraph";
 const mxgraph = require("mxgraph")({
   mxImageBasePath: "./mxgraph/src/images",
   mxBasePath: "./mxgraph/src"

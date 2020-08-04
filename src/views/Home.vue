@@ -6,6 +6,7 @@
     <el-dialog :close-on-click-modal="false" :visible.sync="xmlVisible" append-to-body title="XML预览" top="auto" width="600">
       <pre>{{ mxXml }}</pre>
     </el-dialog>
+    <div id="outlineContainer"></div>
   </div>
 </template>
 
@@ -66,12 +67,15 @@ export default {
 
     new mxRubberband(this.graph);
 
+    new mxDivResizer(document.getElementById("outlineContainer"));
+    new mxOutline(this.graph, document.getElementById("outlineContainer"));
+
     // 得到默认的parent用于插入cell。这通常是root的第一个孩子。
     let parent = this.graph.getDefaultParent();
     this.graph.isCellFoldable = () => false;
 
     // 左侧工具栏
-    this.defaultToolbar = initMenuBar(this.$refs.graphToolBar, this.editor);
+    initMenuBar(this.$refs.graphToolBar, this.graph, this.editor);
     // 右键菜单
     initPopMenu(this.graph, this.editor, this.$refs.graphContainer);
     // 顶部菜单
@@ -110,14 +114,14 @@ export default {
 @import "../assets/styles/right-menu.scss";
 .home {
   display: grid;
-  grid-template-columns: 360px auto;
+  grid-template-columns: 360px auto 360px;
   grid-template-rows: 48px auto;
   width: 100vw;
   height: 80vh;
 }
 .graph-control-btns {
   grid-column-start: 1;
-  grid-column-end: 3;
+  grid-column-end: 4;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -146,5 +150,17 @@ export default {
   /*background: url("../assets/styles/grid.gif");*/
   position: relative;
   background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2QwZDBkMCIgb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDBkMGQwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=");
+}
+#outlineContainer {
+  position: absolute;
+  overflow: hidden;
+  top: 36px;
+  right: 0;
+  width: 200px;
+  height: 140px;
+  background: transparent;
+  border-style: solid;
+  border-color: black;
+  z-index: 999;
 }
 </style>
