@@ -1,15 +1,22 @@
 import mx from "../assets/mxgraph";
 import { uuidGenerator } from "../utils/utils";
 
-export const initKeyHanler = (editor, graph, vm) => {
+export const initKeyHandler = (editor, graph, vm) => {
   const keyHandler = new mx.mxKeyHandler(graph);
-  const undoManager = new mx.mxUndoManager();
+  if (!vm.undoManager) {
+    vm.undoManager = new mx.mxUndoManager();
+  }
   const listener = function(sender, evt) {
-    undoManager.undoableEditHappened(evt.getProperty("edit"));
+    vm.undoManager.undoableEditHappened(evt.getProperty("edit"));
   };
-  graph.getModel().addListener(mxEvent.UNDO, listener);
-  graph.getView().addListener(mxEvent.UNDO, listener);
+  graph.getModel().addListener(mx.mxEvent.UNDO, listener);
+  graph.getView().addListener(mx.mxEvent.UNDO, listener);
 
+  return keyHandler;
+};
+
+export const initKeymap = (keyHandler, editor, graph, vm) => {
+  const undoManager = vm.undoManager;
   // 绑定delete删除
   keyHandler.bindKey(46, evt => {
     if (graph.isEnabled()) {
@@ -73,6 +80,4 @@ export const initKeyHanler = (editor, graph, vm) => {
     mxClipboard.setCells(newCells);
     mxClipboard.paste(graph);
   });
-
-  // keyHandler.bindControlKey
 };

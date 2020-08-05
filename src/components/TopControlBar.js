@@ -32,6 +32,16 @@ export const initControlBar = (graph, editor, container) => {
       }
     },
     {
+      label: "还原",
+      id: "actual-size",
+      fun: function() {
+        return function(evt) {
+          editor.execute("actualSize");
+          document.getElementById("zoom-proportion").innerText = graph.getView().getScale();
+        };
+      }
+    },
+    {
       label: "选择所有",
       id: "select-all",
       fun: function(graph) {
@@ -62,18 +72,29 @@ export const initControlBar = (graph, editor, container) => {
     {
       label: "分组所选",
       id: "group-cells",
-      fun: function(graph) {
+      fun: (graph, editor, cell) => {
         return function(evt) {
-          graph.groupCells(graph.getSelectionCells());
+          editor.execute("group");
         };
       }
     },
     {
       label: "取消分组",
       id: "ungroup-cells",
-      fun: function(graph) {
+      fun: (graph, editor, cell) => {
         return function(evt) {
-          graph.ungroupCells(graph.getSelectionCells());
+          if (editor.graph.getSelectionCell() !== null) {
+            editor.execute("ungroup", cell);
+          }
+        };
+      }
+    },
+    {
+      label: "预览",
+      id: "preview",
+      fun: (graph, editor, cell) => {
+        return function(evt) {
+          editor.execute("show");
         };
       }
     }
@@ -82,7 +103,7 @@ export const initControlBar = (graph, editor, container) => {
   //循环添加所有设置好功能的按钮
   (function() {
     for (let i = 0; i < buttons.length; i++) {
-      createButton(buttons[i].label, buttons[i].id, buttons[i].fun(graph));
+      createButton(buttons[i].label, buttons[i].id, buttons[i].fun(graph, editor));
       if (buttons[i].id === "zoom-in") {
         let node = document.createElement("div");
         node.classList.add("zoom-proportion");

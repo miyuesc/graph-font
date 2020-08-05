@@ -1,7 +1,7 @@
 import mx from "../assets/mxgraph";
 import { uuidGenerator } from "../utils/utils";
 
-export const initPopMenu = (graph, editor, container) => {
+export const initPopMenu = (graph, editor, container, vm) => {
   // 禁用浏览器右键
   mx.mxEvent.disableContextMenu(container);
   // 设置这个属性后节点之间才可以连接
@@ -14,18 +14,16 @@ export const initPopMenu = (graph, editor, container) => {
   window.copyCells = null;
   // Installs context menu
   graph.popupMenuHandler.factoryMethod = (menu, cell, evt) => {
+    addPopupMenuHistoryItems(graph, menu, vm);
     addPopupMenuEditItems(graph, editor, menu, cell, evt);
     addPopupMenuUserDefine(graph, editor, menu, cell, evt);
   };
 };
-// 创建新节点
-export const createNewNode = (graph, x, y, text) => {
-  const parent = graph.getDefaultParent();
-  return graph.insertVertex(parent, null, text, x, y, 80, 30);
-};
 // 选中元素操作
 export const addPopupMenuEditItems = (graph, editor, menu, cell, evt) => {
-  console.log(window.copyCells);
+  if (graph.isSwimlane(cell)) {
+    console.log(cell);
+  }
   let copyCells = window.copyCells;
   if (graph.isSelectionEmpty()) {
     if (copyCells && copyCells.length) {
@@ -37,8 +35,8 @@ export const addPopupMenuEditItems = (graph, editor, menu, cell, evt) => {
           cell.value = cell.value || "";
           newCells.push(cell);
         });
-        mxClipboard.setCells(newCells);
-        mxClipboard.paste(graph);
+        mx.mxClipboard.setCells(newCells);
+        mx.mxClipboard.paste(graph);
       });
     }
   } else {
@@ -88,6 +86,28 @@ export const addPopupMenuEditItems = (graph, editor, menu, cell, evt) => {
     });
   }
 };
+// 历史记录操作
+export const addPopupMenuHistoryItems = (graph, menu, vm) => {
+  if (vm.undoManager && vm.undoManager.history && vm.undoManager.history.length) {
+    const hs = vm.undoManager.history;
+    if (hs.filter(i => i.undone) && hs.filter(i => i.undone).length === hs.length) {
+    } else {
+      menu.addItem("撤销", null, () => {
+        if (graph.isEnabled()) {
+          vm.undoManager.undo();
+        }
+      });
+    }
+    if (hs.filter(i => i.undone && !i.redone) && hs.filter(i => i.undone && !i.redone).length) {
+      menu.addItem("还原", null, () => {
+        if (graph.isEnabled()) {
+          vm.undoManager.redo();
+        }
+      });
+    }
+    menu.addSeparator();
+  }
+};
 // 元素样式操作
 export const addPopupMenuStyleItems = (graph, editor, menu, cell, evt) => {};
 // 元素分组和层级操作
@@ -100,38 +120,9 @@ export const addPopupMenuUserDefine = (graph, editor, menu, cell, evt) => {
     createNewNode(graph, evt.offsetX, evt.offsetY, "新节点");
   });
 };
-//
-export const addMenuItem = (menu, key, parent, trigger, sprite, editor) => {
-  console.log(editor);
-  let action = editor.actions.get(key);
 
-  if (action != null && (menu.showDisabled || action.isEnabled()) && action.visible) {
-    let item = menu.addItem(
-      action.label,
-      null,
-      function() {
-        action.funct(trigger);
-      },
-      parent,
-      sprite,
-      action.isEnabled()
-    );
-    // Adds checkmark image
-    if (action.toggleAction && action.isSelected()) {
-      menu.addCheckmark(item, mx.mxEditor.checkmarkImage);
-    }
-    addShortcut(item, action);
-    return item;
-  }
-  return null;
-};
-//
-export const addShortcut = (item, action) => {
-  if (action.shortcut != null) {
-    let td = item.firstChild.nextSibling.nextSibling;
-    let span = document.createElement("span");
-    span.style.color = "gray";
-    mx.mxUtils.write(span, action.shortcut);
-    td.appendChild(span);
-  }
+// 创建新节点
+export const createNewNode = (graph, x, y, text) => {
+  const parent = graph.getDefaultParent();
+  return graph.insertVertex(parent, null, text, x, y, 80, 30);
 };

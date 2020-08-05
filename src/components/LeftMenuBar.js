@@ -25,10 +25,11 @@ let divider = new mx.mxCell(
   "line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;"
 );
 divider.vertex = true;
+
 // Class Entity type 1
 let classCentityCell = new mx.mxCell(
   "Classname",
-  new mx.mxGeometry(0, 0, 140, 110),
+  new mx.mxGeometry(0, 0, 160, 110),
   "swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;"
 );
 classCentityCell.vertex = true;
@@ -47,6 +48,13 @@ classCentityCell2.insert(field.clone());
 classCentityCell2.insert(divider.clone());
 classCentityCell2.insert(cloneCell(field, "+ method(type): type"));
 
+let note = new mxCell(
+  "Note",
+  new mx.mxGeometry(0, 0, 160, 60),
+  "shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=top;align=left;spacingTop=-6;"
+);
+note.vertex = true;
+
 function cloneCell(cell, value) {
   let clone = cell.clone();
   if (value != null) {
@@ -55,162 +63,82 @@ function cloneCell(cell, value) {
   return clone;
 }
 
-function addClickHandler(elt, ds, cells, editor, graph) {
-  // let graph = editor.graph;
-  let oldMouseDown = ds.mouseDown;
-  let oldMouseMove = ds.mouseMove;
-  let oldMouseUp = ds.mouseUp;
-  let tol = graph.tolerance;
-  let first = null;
-  let sb = mx;
-
-  ds.mouseDown = function(evt) {
-    oldMouseDown.apply(this, arguments);
-    first = new mxPoint(mxEvent.getClientX(evt), mxEvent.getClientY(evt));
-
-    if (this.dragElement != null) {
-      this.dragElement.style.display = "none";
-      mxUtils.setOpacity(elt, 50);
-    }
-  };
-
-  ds.mouseMove = function(evt) {
-    if (
-      this.dragElement != null &&
-      this.dragElement.style.display == "none" &&
-      first != null &&
-      (Math.abs(first.x - mxEvent.getClientX(evt)) > tol || Math.abs(first.y - mxEvent.getClientY(evt)) > tol)
-    ) {
-      this.dragElement.style.display = "";
-      mxUtils.setOpacity(elt, 100);
-    }
-
-    oldMouseMove.apply(this, arguments);
-  };
-
-  ds.mouseUp = function(evt) {
-    try {
-      if (!mxEvent.isPopupTrigger(evt) && this.currentGraph == null && this.dragElement != null && this.dragElement.style.display == "none") {
-        sb.itemClicked(cells, ds, evt, elt);
-      }
-
-      oldMouseUp.apply(ds, arguments);
-      mxUtils.setOpacity(elt, 100);
-      first = null;
-
-      // Blocks tooltips on this element after single click
-      sb.currentElt = elt;
-    } catch (e) {
-      ds.reset();
-      console.error(e);
-    }
-  };
-}
-
-// 初始化工作条元素
-function addVertex(graph, cell, w, h, title) {
-  let elt = document.createElement("a");
-  elt.className = "geItem";
-  elt.style.overflow = "hidden";
-  let border = mx.mxClient.IS_QUIRKS ? 8 + 2 * thumbPadding : 2 * thumbBorder;
-  elt.style.width = thumbWidth + border + "px";
-  elt.style.height = thumbHeight + border + "px";
-  elt.style.padding = thumbPadding + "px";
-  elt.setAttribute("title", title);
-
-  let node = null;
-  // For supporting HTML labels in IE9 standards mode the container is cloned instead
-  if (graph.dialect === mxConstants.DIALECT_SVG && !mxClient.NO_FO && graph.view.getCanvas().ownerSVGElement !== null) {
-    node = graph.view.getCanvas().ownerSVGElement.cloneNode(true);
-  }
-  // LATER: Check if deep clone can be used for quirks if container in DOM
-  else {
-    node = graph.container.cloneNode(false);
-    node.innerHTML = graph.container.innerHTML;
-    // Workaround for clipping in older IE versions
-    if (mxClient.IS_QUIRKS || document.documentMode === 8) {
-      node.firstChild.style.overflow = "visible";
-    }
-  }
-
-  node.style.position = "relative";
-  node.style.overflow = "hidden";
-  node.style.left = thumbBorder + "px";
-  node.style.top = thumbBorder + "px";
-  node.style.width = cell.geometry.width + "px";
-  node.style.height = cell.geometry.height + "px";
-  node.style.visibility = "";
-  node.style.minWidth = "";
-  node.style.minHeight = "";
-
-  elt.appendChild(node);
-  container.appendChild(elt);
-}
-
 export const initMenuBar = (container, graph, editor) => {
   const toolbar = new mx.mxToolbar(container);
   toolbar.enabled = false;
   let letdefaultStyle = { width: 32, height: 24 };
 
-  addVertex(ClassImg, letdefaultStyle.width, letdefaultStyle.height, "");
-  addVertex(ClassImg2, letdefaultStyle.width, letdefaultStyle.height, "shape=ellipse");
-  addVertex(NoteImg, letdefaultStyle.width, letdefaultStyle.height, "shape=rhombus");
-  // addVertex(cylinderImg, letdefaultStyle.width, letdefaultStyle.height, "shape=terminator;");
-  // addVertex(
-  //   triangleImg,
-  //   letdefaultStyle.height,
-  //   letdefaultStyle.height,
-  //   'shape=triangle'
-  // )
-  // addVertex(
-  //   cylinderImg,
-  //   letdefaultStyle.height,
-  //   letdefaultStyle.height,
-  //   'shape=cylinder'
-  // )
-  // addVertex(
-  //   actorImg,
-  //   letdefaultStyle.height,
-  //   letdefaultStyle.height,
-  //   'shape=actor'
-  // )
-  // toolbar.addLine();
-  // toolbar 初始化完毕
+  const components = {
+    classCentityCell: {
+      image: ClassImg,
+      name: "Class",
+      vertex: classCentityCell,
+      width: 160,
+      height: 110,
+      style: ""
+    },
+    classCentityCell2: {
+      image: ClassImg2,
+      name: "Class 2",
+      vertex: classCentityCell2,
+      width: 160,
+      height: 90,
+      style: ""
+    },
+    note: {
+      image: NoteImg,
+      name: "Note",
+      vertex: note,
+      width: 160,
+      height: 60,
+      style: ""
+    }
+  };
 
   // 添加工作条元素
-  function addVertex(icon, w, h, style) {
-    let vertex = new mxCell("请输入文本", new mxGeometry(0, 0, w, h), style);
-    vertex.setVertex(true);
-    addToolbarItem(graph, toolbar, vertex, icon);
+  function addVertex(component) {
+    if (component.vertex) {
+      addToolbarItem(graph, toolbar, component);
+    } else {
+      let vertex = new mxCell("请输入文本", new mxGeometry(0, 0, 160, 40), "");
+      vertex.setVertex(true);
+      addToolbarItem(graph, toolbar, vertex, "");
+    }
   }
   // 绑定工作条元素事件
-  function addToolbarItem(graph, toolbar, prototype, image) {
-    // Function that is executed when the image is dropped on
-    // the graph. The cell argument points to the cell under
-    // the mousepointer if there is one.
-    let funct = function(graph, evt, cell) {
-      graph.stopEditing(false);
-
-      let pt = graph.getPointForEvent(evt);
-      let vertex = graph.getModel().cloneCell(prototype);
-      vertex.geometry.x = pt.x;
-      vertex.geometry.y = pt.y;
-
-      // 对新增的节点id给定uuid
-      let cells = graph.importCells([vertex], 0, 0, cell);
-      cells.forEach(function(item, i) {
-        item.id = uuidGenerator();
-      });
-      graph.setSelectionCells(cells);
+  function addToolbarItem(graph, toolbar, component) {
+    let funct = function(graph, evt, target, x, y) {
+      let cells = graph.importCells([component.vertex], x, y, target);
+      if (cells != null && cells > 0) {
+        graph.scrollCellToVisible(cells[0]);
+        graph.setSelectionCells(cells);
+      }
     };
+    // 创建用来拖动的侧边栏图标
+    let img = document.createElement("img");
+    img.setAttribute("src", component.image);
+    img.style.width = "48px";
+    img.style.height = "48px";
+    img.title = "Drag this to the diagram to create a new vertex";
 
-    // Creates the image which is used as the drag icon (preview)
-    let img = toolbar.addMode(null, image, funct);
-    mxUtils.makeDraggable(img, graph, funct);
+    container.appendChild(img);
+
+    let dragElt = document.createElement("div");
+    dragElt.style.border = "dashed black 1px";
+    dragElt.style.width = component.width + "px";
+    dragElt.style.height = component.height + "px";
+
+    // 创建的图像，它被用作拖动图标（预览）
+    let ds = mxUtils.makeDraggable(img, graph, funct, dragElt, 0, 0, true, true);
+    ds.setGuidesEnabled(true);
   }
 
-  // addVertex(graph, classCentityCell, defaultWidth, defaultHeight, "Class");
-  // addVertex(graph, classCentityCell2, defaultWidth, defaultHeight, "Class 2");
+  for (let i in components) {
+    addVertex(components[i]);
+  }
+
+  toolbar.addLine();
+  // toolbar 初始化完毕
 
   return toolbar;
 };
