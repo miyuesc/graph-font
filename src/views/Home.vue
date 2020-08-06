@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div class="graph-control-btns" ref="topControlBar"></div>
+    <div class="graph-control-btns" ref="topControlBar"><el-button @click.stop="getXMlText">预览xml</el-button></div>
     <div class="graph-toolbar" ref="graphToolBar"></div>
     <div class="graph-container-box">
       <div class="graph-container" ref="graphContainer"></div>
@@ -18,12 +18,13 @@
 <script>
 import mx from "../assets/mxgraph";
 // import hljs from "../assets/highlight/highlight";
-import { formatXml } from "../utils/formart";
-import { initPopMenu } from "../components/RightPopMenu";
-import { initMenuBar } from "../components/LeftMenuBar";
-import { initControlBar } from "../components/TopControlBar";
-import { initKeyHandler, initKeymap } from "../components/KeyHandler";
+import { formatXml } from "@/utils/formart";
+import { initPopMenu } from "@/components/RightPopMenu";
+import { initMenuBar } from "@/components/LeftMenuBar";
+import { initControlBar } from "@/components/TopControlBar";
+import { initKeyHandler, initKeymap } from "@/components/KeyHandler";
 import { initDefaultConfig } from "@/components/DefaultConfig";
+import Shape from "@/assets/mxgraph/Shape";
 
 export default {
   name: "Home",
@@ -49,6 +50,8 @@ export default {
 
     new mxDivResizer(document.getElementById("outlineContainer"));
     new mxOutline(this.graph, document.getElementById("outlineContainer"));
+    Shape.NoteShape();
+    Shape.TextShape();
 
     // 得到默认的parent用于插入cell。这通常是root的第一个孩子。
     let parent = this.graph.getDefaultParent();

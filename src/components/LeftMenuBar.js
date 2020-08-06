@@ -4,33 +4,33 @@ import ClassImg from "@/assets/icons/Class.png";
 import ClassImg2 from "@/assets/icons/Class2.png";
 import NoteImg from "@/assets/icons/Note.png";
 
-let defaultWidth = 32;
+let defaultWidth = 160;
 let defaultHeight = 30;
-let thumbPadding = document.documentMode >= 5 ? 2 : 3;
-let thumbWidth = 32;
-let thumbHeight = 30;
-let thumbBorder = 1;
+let blockWidth = 160;
+let blockHeight = 26;
+let dividerWidth = 160;
+let dividerHeight = 3;
 
 // 文字块
 const field = new mx.mxCell(
   "+ field: type",
-  new mx.mxGeometry(0, 0, 100, 26),
-  "text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;"
+  new mx.mxGeometry(0, 0, blockWidth, blockHeight),
+  "shape=text;align=left;spacingLeft=4;spacingRight=4;overflow=hidden;verticalAlign=middle;"
 );
 field.vertex = true;
 // 分割线
 let divider = new mx.mxCell(
   "",
-  new mx.mxGeometry(0, 0, 40, 8),
-  "line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;"
+  new mx.mxGeometry(0, 0, dividerWidth, dividerHeight),
+  "shape=line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;"
 );
 divider.vertex = true;
 
 // Class Entity type 1
 let classCentityCell = new mx.mxCell(
   "Classname",
-  new mx.mxGeometry(0, 0, 160, 110),
-  "swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;"
+  new mx.mxGeometry(0, 0, defaultWidth, 110),
+  "shape=swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;"
 );
 classCentityCell.vertex = true;
 classCentityCell.insert(field.clone());
@@ -40,8 +40,8 @@ classCentityCell.insert(field.clone());
 // Class Entity type 2
 let classCentityCell2 = new mxCell(
   "Classname",
-  new mxGeometry(0, 0, 160, 90),
-  "swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;"
+  new mx.mxGeometry(0, 0, defaultWidth, 90),
+  "shape=swimlane;fontStyle=1;align=center;verticalAlign=middle;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;"
 );
 classCentityCell2.vertex = true;
 classCentityCell2.insert(field.clone());
@@ -51,7 +51,7 @@ classCentityCell2.insert(cloneCell(field, "+ method(type): type"));
 let note = new mxCell(
   "Note",
   new mx.mxGeometry(0, 0, 160, 60),
-  "shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=top;align=left;spacingTop=-6;"
+  "shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=top;align=left;spacing=6;fillColor=#ffffff"
 );
 note.vertex = true;
 
