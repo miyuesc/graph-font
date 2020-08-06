@@ -64,7 +64,12 @@ export const initDefaultConfig = (graph, editor) => {
   groupStyle[mxConstants.STYLE_STARTSIZE] = "30";
   groupStyle[mxConstants.STYLE_FONTSIZE] = "16";
   groupStyle[mxConstants.STYLE_FONTSTYLE] = 1;
+  groupStyle[mxConstants.STYLE_WHITE_SPACE] = "wrap";
   graph.getStylesheet().putCellStyle("group", groupStyle);
+
+  const noteStyle = new Object();
+  noteStyle[mxConstants.STYLE_WHITE_SPACE] = "wrap";
+  graph.getStylesheet().putCellStyle("text", noteStyle);
 
   // 淡出了启动后，屏幕的UI已经被加载
   let splash = document.getElementById("splash");

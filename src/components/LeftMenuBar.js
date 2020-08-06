@@ -22,7 +22,7 @@ field.vertex = true;
 let divider = new mx.mxCell(
   "",
   new mx.mxGeometry(0, 0, dividerWidth, dividerHeight),
-  "shape=line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;"
+  "shape=line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;"
 );
 divider.vertex = true;
 
@@ -34,8 +34,8 @@ let classCentityCell = new mx.mxCell(
 );
 classCentityCell.vertex = true;
 classCentityCell.insert(field.clone());
-classCentityCell.insert(field.clone());
-classCentityCell.insert(field.clone());
+// classCentityCell.insert(field.clone());
+// classCentityCell.insert(field.clone());
 
 // Class Entity type 2
 let classCentityCell2 = new mxCell(
