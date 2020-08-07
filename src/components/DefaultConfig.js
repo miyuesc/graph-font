@@ -69,7 +69,8 @@ export const initDefaultConfig = (graph, editor) => {
 
   const noteStyle = new Object();
   noteStyle[mxConstants.STYLE_WHITE_SPACE] = "wrap";
-  graph.getStylesheet().putCellStyle("text", noteStyle);
+  groupStyle[mxConstants.STYLE_FILLCOLOR] = "#b1b1b1";
+  graph.getStylesheet().putCellStyle("note", noteStyle);
 
   // 淡出了启动后，屏幕的UI已经被加载
   let splash = document.getElementById("splash");

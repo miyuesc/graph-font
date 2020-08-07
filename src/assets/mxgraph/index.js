@@ -27,7 +27,7 @@ mxgraph.mxGraph.prototype.zoomToCenter = function(margin) {
   this.container.style.overflow = "auto";
 };
 
-const oldFunc = mxGraphHandler.prototype.mouseMove;
+const oldFunc = mxgraph.mxGraphHandler.prototype.mouseMove;
 
 mxgraph.mxGraphHandler.prototype.mouseMove = function(sender, me) {
   var graph = this.graph;

@@ -1,3 +1,5 @@
+import { extend } from "@/utils/utils";
+
 export const TextShape = () => {
   function mxText(
     value,
@@ -47,27 +49,133 @@ export const TextShape = () => {
     this.rotation = 0;
     this.updateMargin();
   }
-  mxUtils.extend(mxText, mxShape);
+
+  /**
+   * Extends mxShape.
+   */
+  extend(mxText, mxShape);
+
+  /**
+   * Variable: baseSpacingTop
+   *
+   * Specifies the spacing to be added to the top spacing. Default is 0. Use the
+   * value 5 here to get the same label positions as in mxGraph 1.x.
+   */
   mxText.prototype.baseSpacingTop = 0;
+
+  /**
+   * Variable: baseSpacingBottom
+   *
+   * Specifies the spacing to be added to the bottom spacing. Default is 0. Use the
+   * value 1 here to get the same label positions as in mxGraph 1.x.
+   */
   mxText.prototype.baseSpacingBottom = 0;
+
+  /**
+   * Variable: baseSpacingLeft
+   *
+   * Specifies the spacing to be added to the left spacing. Default is 0.
+   */
   mxText.prototype.baseSpacingLeft = 0;
+
+  /**
+   * Variable: baseSpacingRight
+   *
+   * Specifies the spacing to be added to the right spacing. Default is 0.
+   */
   mxText.prototype.baseSpacingRight = 0;
+
+  /**
+   * Variable: replaceLinefeeds
+   *
+   * Specifies if linefeeds in HTML labels should be replaced with BR tags.
+   * Default is true.
+   */
   mxText.prototype.replaceLinefeeds = true;
+
+  /**
+   * Variable: verticalTextRotation
+   *
+   * Rotation for vertical text. Default is -90 (bottom to top).
+   */
   mxText.prototype.verticalTextRotation = -90;
+
+  /**
+   * Variable: ignoreClippedStringSize
+   *
+   * Specifies if the string size should be measured in <updateBoundingBox> if
+   * the label is clipped and the label position is center and middle. If this is
+   * true, then the bounding box will be set to <bounds>. Default is true.
+   * <ignoreStringSize> has precedence over this switch.
+   */
   mxText.prototype.ignoreClippedStringSize = true;
+
+  /**
+   * Variable: ignoreStringSize
+   *
+   * Specifies if the actual string size should be measured. If disabled the
+   * boundingBox will not ignore the actual size of the string, otherwise
+   * <bounds> will be used instead. Default is false.
+   */
   mxText.prototype.ignoreStringSize = false;
-  mxText.prototype.textWidthPadding = document.documentMode === 8 && !mxClient.IS_EM ? 4 : 3;
+
+  /**
+   * Variable: textWidthPadding
+   *
+   * Specifies the padding to be added to the text width for the bounding box.
+   * This is needed to make sure no clipping is applied to borders. Default is 4
+   * for IE 8 standards mode and 3 for all others.
+   */
+  mxText.prototype.textWidthPadding = document.documentMode == 8 && !mxClient.IS_EM ? 4 : 3;
+
+  /**
+   * Variable: lastValue
+   *
+   * Contains the last rendered text value. Used for caching.
+   */
   mxText.prototype.lastValue = null;
+
+  /**
+   * Variable: cacheEnabled
+   *
+   * Specifies if caching for HTML labels should be enabled. Default is true.
+   */
   mxText.prototype.cacheEnabled = true;
+
+  /**
+   * Function: isParseVml
+   *
+   * Text shapes do not contain VML markup and do not need to be parsed. This
+   * method returns false to speed up rendering in IE8.
+   */
   mxText.prototype.isParseVml = function() {
     return false;
   };
+
+  /**
+   * Function: isHtmlAllowed
+   *
+   * Returns true if HTML is allowed for this shape. This implementation returns
+   * true if the browser is not in IE8 standards mode.
+   */
   mxText.prototype.isHtmlAllowed = function() {
-    return document.documentMode !== 8 || mxClient.IS_EM;
+    return document.documentMode != 8 || mxClient.IS_EM;
   };
+
+  /**
+   * Function: getSvgScreenOffset
+   *
+   * Disables offset in IE9 for crisper image output.
+   */
   mxText.prototype.getSvgScreenOffset = function() {
     return 0;
   };
+
+  /**
+   * Function: checkBounds
+   *
+   * Returns true if the bounds are not null and all of its variables are numeric.
+   */
   mxText.prototype.checkBounds = function() {
     return (
       !isNaN(this.scale) &&
@@ -80,6 +188,12 @@ export const TextShape = () => {
       !isNaN(this.bounds.height)
     );
   };
+
+  /**
+   * Function: paint
+   *
+   * Generic rendering code.
+   */
   mxText.prototype.paint = function(c, update) {
     // Scale is passed-through to canvas
     var s = this.scale;
@@ -125,6 +239,12 @@ export const TextShape = () => {
       c.text(x, y, w, h, val, this.align, this.valign, this.wrap, fmt, this.overflow, this.clipped, this.getTextRotation(), dir);
     }
   };
+
+  /**
+   * Function: redraw
+   *
+   * Renders the text using the given DOM nodes.
+   */
   mxText.prototype.redraw = function() {
     if (
       this.visible &&
@@ -172,6 +292,12 @@ export const TextShape = () => {
       }
     }
   };
+
+  /**
+   * Function: resetStyles
+   *
+   * Resets all styles.
+   */
   mxText.prototype.resetStyles = function() {
     mxShape.prototype.resetStyles.apply(this, arguments);
 
@@ -192,6 +318,16 @@ export const TextShape = () => {
     this.textDirection = mxConstants.DEFAULT_TEXT_DIRECTION;
     delete this.margin;
   };
+
+  /**
+   * Function: apply
+   *
+   * Extends mxShape to update the text styles.
+   *
+   * Parameters:
+   *
+   * state - <mxCellState> of the corresponding cell.
+   */
   mxText.prototype.apply = function(state) {
     var old = this.spacing;
     mxShape.prototype.apply.apply(this, arguments);
@@ -219,6 +355,15 @@ export const TextShape = () => {
     this.flipV = null;
     this.flipH = null;
   };
+
+  /**
+   * Function: getAutoDirection
+   *
+   * Used to determine the automatic text direction. Returns
+   * <mxConstants.TEXT_DIRECTION_LTR> or <mxConstants.TEXT_DIRECTION_RTL>
+   * depending on the contents of <value>. This is not invoked for HTML, wrapped
+   * content or if <value> is a DOM node.
+   */
   mxText.prototype.getAutoDirection = function() {
     // Looks for strong (directional) characters
     var tmp = /[A-Za-z\u05d0-\u065f\u066a-\u06ef\u06fa-\u07ff\ufb1d-\ufdff\ufe70-\ufefc]/.exec(this.value);
@@ -226,6 +371,12 @@ export const TextShape = () => {
     // Returns the direction defined by the character
     return tmp != null && tmp.length > 0 && tmp[0] > "z" ? mxConstants.TEXT_DIRECTION_RTL : mxConstants.TEXT_DIRECTION_LTR;
   };
+
+  /**
+   * Function: getContentNode
+   *
+   * Returns the node that contains the rendered input.
+   */
   mxText.prototype.getContentNode = function() {
     var result = this.node;
 
@@ -241,6 +392,12 @@ export const TextShape = () => {
 
     return result;
   };
+
+  /**
+   * Function: updateBoundingBox
+   *
+   * Updates the <boundingBox> for this shape using the given node and position.
+   */
   mxText.prototype.updateBoundingBox = function() {
     var node = this.node;
     this.boundingBox = this.bounds.clone();
@@ -383,15 +540,40 @@ export const TextShape = () => {
       }
     }
   };
+
+  /**
+   * Function: getShapeRotation
+   *
+   * Returns 0 to avoid using rotation in the canvas via updateTransform.
+   */
   mxText.prototype.getShapeRotation = function() {
     return 0;
   };
+
+  /**
+   * Function: getTextRotation
+   *
+   * Returns the rotation for the text label of the corresponding shape.
+   */
   mxText.prototype.getTextRotation = function() {
-    return 0;
+    return this.state != null && this.state.shape != null ? this.state.shape.getTextRotation() : 0;
   };
+
+  /**
+   * Function: isPaintBoundsInverted
+   *
+   * Inverts the bounds if <mxShape.isBoundsInverted> returns true or if the
+   * horizontal style is false.
+   */
   mxText.prototype.isPaintBoundsInverted = function() {
     return !this.horizontal && this.state != null && this.state.view.graph.model.isVertex(this.state.cell);
   };
+
+  /**
+   * Function: configureCanvas
+   *
+   * Sets the state of the canvas for drawing the shape.
+   */
   mxText.prototype.configureCanvas = function(c, x, y, w, h) {
     mxShape.prototype.configureCanvas.apply(this, arguments);
 
@@ -402,6 +584,12 @@ export const TextShape = () => {
     c.setFontSize(this.size);
     c.setFontStyle(this.fontStyle);
   };
+
+  /**
+   * Function: updateVmlContainer
+   *
+   * Sets the width and height of the container to 1px.
+   */
   mxText.prototype.updateVmlContainer = function() {
     this.node.style.left = Math.round(this.bounds.x) + "px";
     this.node.style.top = Math.round(this.bounds.y) + "px";
@@ -409,6 +597,12 @@ export const TextShape = () => {
     this.node.style.height = "1px";
     this.node.style.overflow = "visible";
   };
+
+  /**
+   * Function: getHtmlValue
+   *
+   * Private helper function to create SVG elements
+   */
   mxText.prototype.getHtmlValue = function() {
     var val = this.value;
 
@@ -422,6 +616,12 @@ export const TextShape = () => {
 
     return val;
   };
+
+  /**
+   * Function: getTextCss
+   *
+   * Private helper function to create SVG elements
+   */
   mxText.prototype.getTextCss = function() {
     var lh = mxConstants.ABSOLUTE_LINE_HEIGHT ? this.size * mxConstants.LINE_HEIGHT + "px" : mxConstants.LINE_HEIGHT;
 
@@ -463,6 +663,12 @@ export const TextShape = () => {
 
     return css;
   };
+
+  /**
+   * Function: redrawHtmlShape
+   *
+   * Updates the HTML node(s) to reflect the latest bounds and scale.
+   */
   mxText.prototype.redrawHtmlShape = function() {
     if (mxClient.IS_SVG) {
       this.redrawHtmlShapeWithCss3();
@@ -489,6 +695,12 @@ export const TextShape = () => {
       }
     }
   };
+
+  /**
+   * Function: redrawHtmlShapeWithCss3
+   *
+   * Updates the HTML node(s) to reflect the latest bounds and scale.
+   */
   mxText.prototype.redrawHtmlShapeWithCss3 = function() {
     var w = Math.max(0, Math.round(this.bounds.width / this.scale));
     var h = Math.max(0, Math.round(this.bounds.height / this.scale));
@@ -543,6 +755,12 @@ export const TextShape = () => {
       })
     );
   };
+
+  /**
+   * Function: updateHtmlTransform
+   *
+   * Returns the spacing as an <mxPoint>.
+   */
   mxText.prototype.updateHtmlTransform = function() {
     var theta = this.getTextRotation();
     var style = this.node.style;
@@ -570,6 +788,12 @@ export const TextShape = () => {
       style.opacity = "";
     }
   };
+
+  /**
+   * Function: updateInnerHtml
+   *
+   * Sets the inner HTML of the given element to the <value>.
+   */
   mxText.prototype.updateInnerHtml = function(elt) {
     if (mxUtils.isNode(this.value)) {
       elt.innerHTML = this.value.outerHTML;
@@ -589,6 +813,12 @@ export const TextShape = () => {
       elt.innerHTML = val;
     }
   };
+
+  /**
+   * Function: updateHtmlFilter
+   *
+   * Rotated text rendering quality is bad for IE9 quirks/IE8 standards
+   */
   mxText.prototype.updateHtmlFilter = function() {
     var style = this.node.style;
     var dx = this.margin.x;
@@ -766,6 +996,12 @@ export const TextShape = () => {
     style.left = Math.round(this.bounds.x + left_fix - w / 2) + "px";
     style.top = Math.round(this.bounds.y + top_fix - h / 2 + dy) + "px";
   };
+
+  /**
+   * Function: updateValue
+   *
+   * Updates the HTML node(s) to reflect the latest bounds and scale.
+   */
   mxText.prototype.updateValue = function() {
     if (mxUtils.isNode(this.value)) {
       this.node.innerHTML = "";
@@ -837,6 +1073,12 @@ export const TextShape = () => {
       }
     }
   };
+
+  /**
+   * Function: updateFont
+   *
+   * Updates the HTML node(s) to reflect the latest bounds and scale.
+   */
   mxText.prototype.updateFont = function(node) {
     var style = node.style;
 
@@ -878,6 +1120,12 @@ export const TextShape = () => {
       style.textAlign = "left";
     }
   };
+
+  /**
+   * Function: updateSize
+   *
+   * Updates the HTML node(s) to reflect the latest bounds and scale.
+   */
   mxText.prototype.updateSize = function(node, enableWrap) {
     var w = Math.max(0, Math.round(this.bounds.width / this.scale));
     var h = Math.max(0, Math.round(this.bounds.height / this.scale));
@@ -944,9 +1192,21 @@ export const TextShape = () => {
       style.whiteSpace = "nowrap";
     }
   };
+
+  /**
+   * Function: getMargin
+   *
+   * Returns the spacing as an <mxPoint>.
+   */
   mxText.prototype.updateMargin = function() {
     this.margin = mxUtils.getAlignmentAsPoint(this.align, this.valign);
   };
+
+  /**
+   * Function: getSpacing
+   *
+   * Returns the spacing as an <mxPoint>.
+   */
   mxText.prototype.getSpacing = function() {
     var dx = 0;
     var dy = 0;

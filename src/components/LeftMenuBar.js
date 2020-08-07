@@ -15,16 +15,18 @@ let dividerHeight = 3;
 const field = new mx.mxCell(
   "+ field: type",
   new mx.mxGeometry(0, 0, blockWidth, blockHeight),
-  "shape=text;align=left;spacingLeft=4;spacingRight=4;overflow=hidden;verticalAlign=middle;"
+  "shape=text;whiteSpace=normal;align=left;spacingLeft=4;spacingRight=4;overflow=hidden;verticalAlign=middle;"
 );
 field.vertex = true;
+field.setConnectable(false);
 // 分割线
 let divider = new mx.mxCell(
   "",
-  new mx.mxGeometry(0, 0, dividerWidth, dividerHeight),
+  new mx.mxGeometry(),
   "shape=line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;"
 );
 divider.vertex = true;
+divider.setConnectable(false);
 
 // Class Entity type 1
 let classCentityCell = new mx.mxCell(
@@ -34,6 +36,7 @@ let classCentityCell = new mx.mxCell(
 );
 classCentityCell.vertex = true;
 classCentityCell.insert(field.clone());
+console.log(classCentityCell);
 // classCentityCell.insert(field.clone());
 // classCentityCell.insert(field.clone());
 
@@ -41,17 +44,17 @@ classCentityCell.insert(field.clone());
 let classCentityCell2 = new mxCell(
   "Classname",
   new mx.mxGeometry(0, 0, defaultWidth, 90),
-  "shape=swimlane;fontStyle=1;align=center;verticalAlign=middle;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;"
+  "shape=swimlane;fontStyle=1;align=center;verticalAlign=middle;fillColor=#ffffff;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;"
 );
 classCentityCell2.vertex = true;
 classCentityCell2.insert(field.clone());
 classCentityCell2.insert(divider.clone());
 classCentityCell2.insert(cloneCell(field, "+ method(type): type"));
 
-let note = new mxCell(
+let note = new mx.mxCell(
   "Note",
   new mx.mxGeometry(0, 0, 160, 60),
-  "shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=top;align=left;spacing=6;fillColor=#ffffff"
+  "shape=note;whiteSpace=normal;html=1;size=14;verticalAlign=top;align=left;spacing=6;fillColor=#ffffff"
 );
 note.vertex = true;
 

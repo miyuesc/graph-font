@@ -6,3 +6,10 @@ export const uuidGenerator = () => {
     return originChar.charAt(Math.floor(Math.random() * len));
   });
 };
+export const extend = (Child, Parent) => {
+  const F = function() {};
+  F.prototype = Parent.prototype;
+  Child.prototype = new F();
+  Child.prototype.constructor = Child;
+  Child.uber = Parent.prototype;
+};
